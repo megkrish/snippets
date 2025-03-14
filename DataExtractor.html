@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Extractor</title>
+    <style>
+        /* Basic styling for the tab container */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .tabs {
+            display: flex;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            padding: 10px;
+            justify-content: center;
+        }
+
+        .tab {
+            padding: 14px 20px;
+            margin-right: 2px;
+            background-color: #ddd;
+            border: 1px solid #ccc;
+            transition: background-color 0.3s;
+        }
+
+        .tab:hover {
+            background-color: #bbb;
+        }
+
+        .tab.active {
+            background-color: #2196F3;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Styling for the content sections */
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+tr {
+            cursor: pointer;
+        }
+        .menu:hover {
+            background-color: #f1f1f1;
+        }
+        input[type="text"] {
+            margin-bottom: 20px;
+            padding: 8px;
+            width: 100%;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tab Buttons -->
+    <div class="tabs">
+        <div class="tab" onclick="openTab(event, 'restaurant')">Restaurant</div>
+        <div class="tab" onclick="openTab(event, 'careers')">Careers</div>
+        <div class="tab" onclick="openTab(event, 'certifications')">Certifications</div>
+    </div>
+
+    <!-- Tab Content -->
+    <div id="restaurant" class="tab-content">
+        <h3>Click to visit Restaurant's web page</h3>
+        <input type="text" id="filterInput" onkeyup="filterTable()" placeholder="Search for products...">
+
+    <!-- Table -->
+    <table id="productTable" class="clickable">
+        <thead>
+            <tr>
+                <th>Location</th>
+                <th>Resturants</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="menu" data-link="https://www.thecloveclub.com">
+                <td>London</td>
+                <td>The clove club</td>
+            </tr>
+            <tr class="menu" data-link="https://www.oetkercollection.com/fr/hotels/le-bristol-paris/restaurants-et-bar/epicure/?utm_source=google&utm_medium=local&utm_campaign=Epicure">
+                <td>France</td>
+                <td>Epicure</td>
+            </tr>
+            <tr class="menu" data-link="https://www.paihotels.com/the-president-hotel-jayanagar-bangalore/restaurants/restaurants.html">
+                <td>India</td>
+                <td>Gufha Restaurant</td>
+            </tr>
+            <tr class="menu" data-link="https://thevintagekitchen.ie">
+                <td>Ireland</td>
+                <td>The Vintage Kitchen</td>
+            </tr>
+            <tr class="menu" data-link="https://www.zeughauskeller.ch/home">
+                <td>Switzerland</td>
+                <td> Zeughauskeller </td>
+            </tr>
+            <tr class="menu" data-link="https://providencela.com">
+                <td>California </td>
+                <td>Providence</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    <div id="careers" class="tab-content">
+        <h3>Carrers</h3>
+        <p>Details about careers go here.</p>
+    </div>
+    <div id="certifications" class="tab-content">
+        <h3> Certifications </h3>
+        <p>Information on certifications goes here.</p>
+    </div>
+
+    <script>
+        function filterTable() {
+            // Get the input value and convert it to lowercase
+            var input = document.getElementById('filterInput');
+            var filter = input.value.toLowerCase();
+            // Get the table and its rows
+            var table = document.getElementById('productTable');
+            var tr = table.getElementsByTagName('tr');
+            
+            // Loop through all the table rows, and hide those that don't match the filter
+            for (var i = 1; i < tr.length; i++) { // Skip the header row
+                var td = tr[i].getElementsByTagName('td');
+                var foundMatch = false;
+                
+                // Check each cell in the row to see if it matches the filter
+                for (var j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        var cellText = td[j].textContent || td[j].innerText;
+                        if (cellText.toLowerCase().indexOf(filter) > -1) {
+                            foundMatch = true;
+                        }
+                    }
+                }
+
+                // If a match is found, display the row; otherwise, hide it
+                if (foundMatch) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+
+	document.querySelectorAll('.menu').forEach(function(cell) {
+        cell.addEventListener('click', function() {
+            // Get the URL from the data-link attribute
+            var link = cell.getAttribute('data-link');
+            // Open the link in a new tab
+            window.open(link, '_blank');
+        });
+    });
+
+
+        function openTab(evt, tabName) {
+            // Get all elements with class="tab-content" and hide them
+            var contents = document.querySelectorAll('.tab-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active');
+            }
+
+            // Get all elements with class="tab" and remove the "active" class
+            var tabs = document.querySelectorAll('.tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+
+            // Show the current tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add "active" class to the clicked tab
+            evt.currentTarget.classList.add('active');
+        }
+
+        // Set the default open tab
+        document.querySelector('.tab').click();
+    </script>
+
+</body>
+</html>
